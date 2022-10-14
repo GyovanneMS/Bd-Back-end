@@ -14,3 +14,5 @@ model tbl_usuario {
   id Int  @id @default(autoincrement()) 
   Nome String
 }
+
+//Para realizar o primeiro acesso ao BD é importante criar uma model e verificar aw 
