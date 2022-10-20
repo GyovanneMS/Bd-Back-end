@@ -5,34 +5,52 @@
 * Versão: 1.1.0.0
 ********************************************/
 
+const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('../modulos/config.js')
+
 //Função para gerar um novo aluno
 const novoAluno = async function(alunoJson) {
     let aluno = alunoJson;
 
     //Validação de campos obrigatórios
     if(aluno.Nome == '' || aluno.Nome == undefined || aluno.Foto == '' || aluno.Foto == undefined || aluno.RG == '' || aluno.RG == undefined || aluno.CPF == '' || aluno.CPF == undefined || aluno.Email == '' || aluno.Email == undefined || aluno.Data_Nascimento == '' || aluno.Data_Nascimento == undefined){
-        return false;
+        return {message: MESSAGE_ERROR.REQUIRED_FILDS, status: 400};
         //Verificação para ver se o E-mail é válido
     } else if(!aluno.Email.includes('@')){
-        return false;
+        return {message: MESSAGE_ERROR.INVALID_EMAIL, status: 400};
     } else{
         //import da model de insertAluno
         const novoAluno = require('../model/DAO/aluno.js');
-
         //import a funtion para adicionar um aluno
-        const result = novoAluno.insertAluno(alunoJson);
-        
+        const result = await novoAluno.insertAluno(alunoJson);
         if(result){
-            return true
+            return {message: MESSAGE_SUCESS.SUCESS_CREATED, status: 201};
         } else {
-            return false
+            return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
         }
     }
 }
 
 //Função para atualizar um registtro
-const atualizarAluno = async function() {
+const atualizarAluno = async function(alunoJson) {
+    let aluno = alunoJson;
 
+    //Validação de campos obrigatórios
+    if(aluno.id == undefined || aluno.id == '' || aluno.Nome == '' || aluno.Nome == undefined || aluno.Foto == '' || aluno.Foto == undefined || aluno.RG == '' || aluno.RG == undefined || aluno.CPF == '' || aluno.CPF == undefined || aluno.Email == '' || aluno.Email == undefined || aluno.Data_Nascimento == '' || aluno.Data_Nascimento == undefined){
+        return {message: MESSAGE_ERROR.REQUIRED_FILDS, status: 400};
+        //Verificação para ver se o E-mail é válido
+    } else if(!aluno.Email.includes('@')){
+        return {message: MESSAGE_ERROR.INVALID_EMAIL, status: 400};
+    } else{
+        //import da model de insertAluno
+        const novoAluno = require('../model/DAO/aluno.js');
+        //import a funtion para adicionar um aluno
+        const result = await novoAluno.updateAluno(alunoJson);
+        if(result){
+            return {message: MESSAGE_SUCESS.SUCESS_UPDATED, status: 200};
+        } else {
+            return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
+        }
+    }
 }
 
 //Função para excluir um registro
@@ -50,9 +68,9 @@ const listarAlunos = async function() {
     if(dadosAlunos){
         {
         //Converção do tipo de dados BigInt para int(?????????????????????????????????????????????)
-        dadosAlunos.forEach(element => {
-            element.id = Number(element.id)
-        });
+        //dadosAlunos.forEach(element => {
+        //    element.id = Number(element.id)
+        //});
         }
         dadosAlunosJson.alunos = dadosAlunos;
         return dadosAlunosJson;
@@ -62,5 +80,5 @@ const listarAlunos = async function() {
 }
 
 module.exports = {
-    listarAlunos, novoAluno
+    listarAlunos, novoAluno, atualizarAluno
 }

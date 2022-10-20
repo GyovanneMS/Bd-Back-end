@@ -19,6 +19,7 @@ npm install @prisma/client
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const {MESSAGE_ERROR, MESSAGE_SUCESS} = require('./modulos/config.js')
 
 const app = express();
 
@@ -54,7 +55,7 @@ app.get('/alunos', cors(), async function(request, response) {
         message = dadosAlunos;
     } else{
         statusCode = 404;
-        message = 'Nenhum aluno encontrado';
+        message = MESSAGE_ERROR.EMPTY_DB;
     }
 
     //retorna os dados da API
@@ -79,26 +80,58 @@ app.post('/aluno', cors(), jsonParser, async function(request, response){
 
         //realiza um processo de conversão de dados para conseguir comparar um json vazio
         if(JSON.stringify(dadosBody) != '{}'){
-
             const controllerAluno = require('./controler/controllerAluno.js');
 
             //Chama a função novoAluno da controller e encminha os dados do dadosBody
             const novoAluno = await controllerAluno.novoAluno(dadosBody)
 
-            if(novoAluno){
-                statusCode = 200 + 1;
-                message = 'Item criado com sucesso.';
-            } else {
-                statusCode = 422;
-                message = 'Item não criado';
-            }
+            statusCode = novoAluno.status;
+            message = novoAluno.message;
+
         } else{
             statusCode = 400;
-            message = 'Está requição necessita de itens no body';
+            message = MESSAGE_ERROR.EMPTY_BODY;
         }
     } else {
         statusCode = 415;
-        message = 'Content-Type incorreto. Está requisição aceita apenas application/json';
+        message = MESSAGE_ERROR.CONTENT_TYPE;
+    }
+
+    response.status(statusCode);
+    response.json(message);
+});
+
+app.put('/aluno', cors(), jsonParser, async function(request, response){
+    let statusCode;
+    let message;
+    let headerContentType;
+
+    //Recebe um tipo de content-type que foi enviado no header da requisição
+        //application/json
+    headerContentType = request.headers['content-type'];
+
+    //Validar o content-type
+    if(headerContentType == 'application/json'){
+        //recebe do corpo da mensagem, o conteúdo
+        let dadosBody = request.body;
+
+        //realiza um processo de conversão de dados para conseguir comparar um json vazio
+        if(JSON.stringify(dadosBody) != '{}'){
+            const controllerAluno = require('./controler/controllerAluno.js');
+
+            //Chama a função novoAluno da controller e encminha os dados do dadosBody
+            const novoAluno = await controllerAluno.atualizarAluno(dadosBody)
+
+            statusCode = novoAluno.status;
+            message = novoAluno.message;
+
+        } else{
+            statusCode = 400;
+            message = MESSAGE_ERROR.EMPTY_BODY;
+        }
+    } else {
+        statusCode = 415;
+        message = MESSAGE_ERROR.CONTENT_TYPE;
     }
 
     response.status(statusCode);
