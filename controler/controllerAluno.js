@@ -34,8 +34,11 @@ const novoAluno = async function(alunoJson) {
 const atualizarAluno = async function(alunoJson) {
     let aluno = alunoJson;
 
+    if(aluno.id == undefined || aluno.id == '' ){
+        return {message: MESSAGE_ERROR.EMPTY_ID, status: 400};
+    }
     //Validação de campos obrigatórios
-    if(aluno.id == undefined || aluno.id == '' || aluno.Nome == '' || aluno.Nome == undefined || aluno.Foto == '' || aluno.Foto == undefined || aluno.RG == '' || aluno.RG == undefined || aluno.CPF == '' || aluno.CPF == undefined || aluno.Email == '' || aluno.Email == undefined || aluno.Data_Nascimento == '' || aluno.Data_Nascimento == undefined){
+    if(aluno.Nome == '' || aluno.Nome == undefined || aluno.Foto == '' || aluno.Foto == undefined || aluno.RG == '' || aluno.RG == undefined || aluno.CPF == '' || aluno.CPF == undefined || aluno.Email == '' || aluno.Email == undefined || aluno.Data_Nascimento == '' || aluno.Data_Nascimento == undefined){
         return {message: MESSAGE_ERROR.REQUIRED_FILDS, status: 400};
         //Verificação para ver se o E-mail é válido
     } else if(!aluno.Email.includes('@')){
