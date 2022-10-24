@@ -52,13 +52,28 @@ const atualizarAluno = async function(alunoJson) {
             return {message: MESSAGE_SUCESS.SUCESS_UPDATED, status: 200};
         } else {
             return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
-        } 
+        }
     }
 }
 
 //Função para excluir um registro
-const deletarAluno = async function() {
+const deletarAluno = async function(idAluno) {
+    let id = idAluno;
 
+    if(id == undefined || id == '' ){
+        return {message: MESSAGE_ERROR.EMPTY_ID, status: 400};
+    } else{
+        //import da model de insertAluno
+        const delAluno = require('../model/DAO/aluno.js');
+        //import a funtion para adicionar um aluno
+        const result = await delAluno.deleteAluno(id);
+
+        if(result){
+            return {message: MESSAGE_SUCESS.SUCESS_DELETED, status: 200};
+        } else {
+            return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
+        }
+    }
 }
 
 //Função para retornar todos os registros
@@ -83,5 +98,5 @@ const listarAlunos = async function() {
 }
 
 module.exports = {
-    listarAlunos, novoAluno, atualizarAluno
+    listarAlunos, novoAluno, atualizarAluno, deletarAluno
 }

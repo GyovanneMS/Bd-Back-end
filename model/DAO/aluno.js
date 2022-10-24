@@ -81,7 +81,7 @@ const updateAluno = async function(aluno) {
 
         const result = await prisma.$executeRawUnsafe(sql);
 
-        if(result){
+        if(result || result == 0){
             return true;
         } else {
             return false;
@@ -113,11 +113,32 @@ const selectAllAlunos = async function() {
 
 }
 
-//Deletar ou excluír um registro de dados
-const deleteAluno = async function(id) {
-    let 
+//Deletar ou excluír um registro de dados    
+const deleteAluno = async function(idAluno) {
+    let id = idAluno;
+
+        //Import da classe prismaClient que é responsável pelas alterações com o BD
+        const {PrismaClient} = require("@prisma/client");
+
+        //Instância da classe PrismaClient  
+        const prisma = new PrismaClient();
+    
+        //Criamos um objeto do tipo Record Set (rsAlunos) para receber od dados do BD através de um Script SQL (select)
+        let sql = `delete from tbl_aluno where id = ${id}`;
+        try{    
+
+            const result = await prisma.$executeRawUnsafe(sql);
+    
+            if(result || result == 0){
+                return true;
+            } else {
+                return false;
+            }
+        } catch{ 
+            return false;
+        }
 }
 
 module.exports = {
-    selectAllAlunos,insertAluno,updateAluno
+    selectAllAlunos,insertAluno,updateAluno,deleteAluno
 }

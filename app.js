@@ -130,11 +130,11 @@ app.put('/aluno/:id', cors(), jsonParser, async function(request, response){
 
                 const controllerAluno = require('./controler/controllerAluno.js');
 
-                //Chama a função novoAluno da controller e encminha os dados do dadosBody
-                const novoAluno = await controllerAluno.atualizarAluno(dadosBody)
+                //Chama a função atualizarAluno da controller e encminha os dados do dadosBody
+                const atualizarAluno = await controllerAluno.atualizarAluno(dadosBody)
 
-                statusCode = novoAluno.status;
-                message = novoAluno.message;
+                statusCode = atualizarAluno.status;
+                message = atualizarAluno.message;
             } else {
             statusCode = 400;
             message = MESSAGE_ERROR.REQUIRED_FILDS
@@ -149,6 +149,30 @@ app.put('/aluno/:id', cors(), jsonParser, async function(request, response){
         message = MESSAGE_ERROR.CONTENT_TYPE;
     }
 
+    response.status(statusCode);
+    response.json(message);
+        
+});
+
+app.delete('/aluno/:id', cors(), jsonParser, async function(request, response){
+    let statusCode;
+    let message;
+
+        //Recebe o id mandado pela requisição
+        let id = request.params.id
+
+        //Validação do Id
+        if(id != '' && id != undefined && id != false){
+            const controllerAluno = require('./controler/controllerAluno.js');
+            const delAluno = await controllerAluno.deletarAluno(id)
+            console.log(delAluno)
+            statusCode = delAluno.status;
+            message = delAluno.message;
+
+        } else {
+            statusCode = 400;
+            message = MESSAGE_ERROR.EMPTY_ID
+        }
     response.status(statusCode);
     response.json(message);
         

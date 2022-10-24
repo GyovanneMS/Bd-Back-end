@@ -13,7 +13,7 @@ const MESSAGE_ERROR = {
     EMPTY_DB: 'Item não encontrado no banco de dados.',
     ERROR_CREATED: 'Item não criado.',
     INTERNAL_ERROR_DB: 'Não foi possível realizar a operação com o Banco de dados.',
-    REQUIRED_ID: 'Id não informado, ele é obrigatório para esse tipo de requisição.'
+    EMPTY_ID: 'Id não informado, ele é obrigatório para esse tipo de requisição.'
 };
 
 const MESSAGE_SUCESS = {
