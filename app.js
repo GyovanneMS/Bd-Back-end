@@ -101,7 +101,9 @@ app.post('/aluno', cors(), jsonParser, async function(request, response){
     response.json(message);
 });
 
-app.put('/aluno', cors(), jsonParser, async function(request, response){
+
+//Endpoit para atualizar um aluno existente
+app.put('/aluno/:id', cors(), jsonParser, async function(request, response){
     let statusCode;
     let message;
     let headerContentType;
@@ -117,13 +119,26 @@ app.put('/aluno', cors(), jsonParser, async function(request, response){
 
         //realiza um processo de conversão de dados para conseguir comparar um json vazio
         if(JSON.stringify(dadosBody) != '{}'){
-            const controllerAluno = require('./controler/controllerAluno.js');
 
-            //Chama a função novoAluno da controller e encminha os dados do dadosBody
-            const novoAluno = await controllerAluno.atualizarAluno(dadosBody)
+            //Recebe o id mandado pela requisição
+            let id = request.params.id
 
-            statusCode = novoAluno.status;
-            message = novoAluno.message;
+            //Validação do Id
+            if(id != '' && id != undefined && id != false){
+                //Adiciona o id no json no corpo da requisição
+                dadosBody.id = id;    
+
+                const controllerAluno = require('./controler/controllerAluno.js');
+
+                //Chama a função novoAluno da controller e encminha os dados do dadosBody
+                const novoAluno = await controllerAluno.atualizarAluno(dadosBody)
+
+                statusCode = novoAluno.status;
+                message = novoAluno.message;
+            } else {
+            statusCode = 400;
+            message = MESSAGE_ERROR.REQUIRED_FILDS
+            }
 
         } else{
             statusCode = 400;
@@ -136,6 +151,7 @@ app.put('/aluno', cors(), jsonParser, async function(request, response){
 
     response.status(statusCode);
     response.json(message);
+        
 });
 
 app.listen(3030, function(){

@@ -45,14 +45,14 @@ const atualizarAluno = async function(alunoJson) {
         return {message: MESSAGE_ERROR.INVALID_EMAIL, status: 400};
     } else{
         //import da model de insertAluno
-        const novoAluno = require('../model/DAO/aluno.js');
+        const atualizarAluno = require('../model/DAO/aluno.js');
         //import a funtion para adicionar um aluno
-        const result = await novoAluno.updateAluno(alunoJson);
+        const result = await atualizarAluno.updateAluno(alunoJson);
         if(result){
             return {message: MESSAGE_SUCESS.SUCESS_UPDATED, status: 200};
         } else {
             return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
-        }
+        } 
     }
 }
 
