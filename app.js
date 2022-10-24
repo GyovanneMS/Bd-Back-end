@@ -165,7 +165,7 @@ app.delete('/aluno/:id', cors(), jsonParser, async function(request, response){
         if(id != '' && id != undefined && id != false){
             const controllerAluno = require('./controler/controllerAluno.js');
             const delAluno = await controllerAluno.deletarAluno(id)
-            console.log(delAluno)
+
             statusCode = delAluno.status;
             message = delAluno.message;
 
