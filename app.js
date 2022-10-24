@@ -175,6 +175,7 @@ app.delete('/aluno/:id', cors(), jsonParser, async function(request, response){
         }
     response.status(statusCode);
     response.json(message);
+    
         
 });
 
