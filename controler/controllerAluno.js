@@ -97,6 +97,28 @@ const listarAlunos = async function() {
     }
 }
 
+//Função para retornar um aluno pelo Id
+const mostrarAluno = async function(idAluno) {
+    let dadosAlunoJson = {};
+    let id = idAluno
+    
+    if(id == undefined || id == '' ){
+        return {message: MESSAGE_ERROR.EMPTY_ID, status: 400};
+    } else{
+        const  { selectByIdAluno } = require ('../model/DAO/aluno.js');
+
+        const dadosAluno = await selectByIdAluno(id);
+
+        if(dadosAluno){
+    
+            dadosAlunoJson.aluno = dadosAluno;
+            return dadosAlunoJson;
+        } else {
+            return false
+        }
+    }
+}
+
 module.exports = {
-    listarAlunos, novoAluno, atualizarAluno, deletarAluno
+    listarAlunos, novoAluno, atualizarAluno, deletarAluno, mostrarAluno
 }

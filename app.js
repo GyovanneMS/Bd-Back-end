@@ -63,6 +63,38 @@ app.get('/alunos', cors(), async function(request, response) {
     response.json(message);
 });
 
+app.get('/aluno/:id', cors(), jsonParser, async function(request, response){
+    let statusCode;
+    let message;
+    let id = request.params.id
+
+            //Validação do Id
+    if(id != '' && id != undefined && id != false){   
+
+        //import do arquivo controllerAluno
+        const controllerAluno = require('./controler/controllerAluno.js');
+        
+        //Retorna todos os alunos existentesno BD
+        const dadosAluno = await controllerAluno.mostrarAluno(id);
+
+        //Valida se existe retorne de dados
+        if(dadosAluno){
+            statusCode = 200;
+            message = dadosAluno;
+        } else{
+            statusCode = 404;
+            message = MESSAGE_ERROR.EMPTY_DB;
+        }
+    }else{
+        statusCode = 400;
+        message = MESSAGE_ERROR.EMPTY_ID;
+    }
+
+    //retorna os dados da API
+    response.status(statusCode);
+    response.json(message);
+});
+
 //EndPoint para inserir um novo aluno
 app.post('/aluno', cors(), jsonParser, async function(request, response){
     let statusCode;
@@ -175,7 +207,7 @@ app.delete('/aluno/:id', cors(), jsonParser, async function(request, response){
         }
     response.status(statusCode);
     response.json(message);
-    
+
         
 });
 
