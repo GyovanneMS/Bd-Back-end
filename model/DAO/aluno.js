@@ -134,11 +134,11 @@ const selectByIdAluno = async function(id) {
                 Data_Nascimento 
 
                 from tbl_aluno where id = ${id}`;
-    console.log(id);
+
     try{
 
         const rsAluno = await prisma.$queryRawUnsafe(sql);
-        console.log(rsAluno);
+
         if(rsAluno.length > 0){
             return rsAluno;
         } else{

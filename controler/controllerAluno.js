@@ -63,15 +63,24 @@ const deletarAluno = async function(idAluno) {
     if(id == undefined || id == '' ){
         return {message: MESSAGE_ERROR.EMPTY_ID, status: 400};
     } else{
-        //import da model de insertAluno
-        const delAluno = require('../model/DAO/aluno.js');
-        //import a funtion para adicionar um aluno
-        const result = await delAluno.deleteAluno(id);
 
-        if(result){
-            return {message: MESSAGE_SUCESS.SUCESS_DELETED, status: 200};
+        const buscarAluno = await mostrarAluno(id);
+
+        if(buscarAluno){
+
+            //import da model de insertAluno
+            const delAluno = require('../model/DAO/aluno.js');
+            //import a funtion para adicionar um aluno
+
+            const result = await delAluno.deleteAluno(id);
+
+            if(result){
+                return {message: MESSAGE_SUCESS.SUCESS_DELETED, status: 200};
+            } else {
+                return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
+            }
         } else {
-            return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
+            return {message: MESSAGE_ERROR.EMPTY_DB, status: 404}
         }
     }
 }
