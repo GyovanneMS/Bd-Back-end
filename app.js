@@ -2,7 +2,7 @@
 Objetivo: API  responsável pela manipulação de dados do Back-end (GET, POST, PUT, DELETE)
 Autor: Gyovanne Martins
 Data: 10/10
-Versão: 1.5.0.0
+Versão: 1.1.0.0
 npm install express --save
 npm install cors --save
 npm install body-parser --save
@@ -38,7 +38,7 @@ const jsonParser = bodyParser.json();
 //Data: 10/10/2022
 
 //EndPoint para listar todos os Alunos
-app.get('/alunos', cors(), async function(request, response) {
+app.get('/vs1/alunos', cors(), async function(request, response) {
 
     let statusCode;
     let message;
@@ -63,7 +63,7 @@ app.get('/alunos', cors(), async function(request, response) {
     response.json(message);
 });
 
-app.get('/aluno/:id', cors(), jsonParser, async function(request, response){
+app.get('/vs1/aluno/:id', cors(), jsonParser, async function(request, response){
     let statusCode;
     let message;
     let id = request.params.id
@@ -96,7 +96,7 @@ app.get('/aluno/:id', cors(), jsonParser, async function(request, response){
 });
 
 //EndPoint para inserir um novo aluno
-app.post('/aluno', cors(), jsonParser, async function(request, response){
+app.post('/vs1/aluno', cors(), jsonParser, async function(request, response){
     let statusCode;
     let message;
     let headerContentType;
@@ -135,7 +135,7 @@ app.post('/aluno', cors(), jsonParser, async function(request, response){
 
 
 //Endpoit para atualizar um aluno existente
-app.put('/aluno/:id', cors(), jsonParser, async function(request, response){
+app.put('/vs1/aluno/:id', cors(), jsonParser, async function(request, response){
     let statusCode;
     let message;
     let headerContentType;
@@ -186,7 +186,7 @@ app.put('/aluno/:id', cors(), jsonParser, async function(request, response){
         
 });
 
-app.delete('/aluno/:id', cors(), jsonParser, async function(request, response){
+app.delete('/vs1/aluno/:id', cors(), jsonParser, async function(request, response){
     let statusCode;
     let message;
 
@@ -201,6 +201,178 @@ app.delete('/aluno/:id', cors(), jsonParser, async function(request, response){
 
             statusCode = delAluno.status;
             message = delAluno.message;
+
+        } else {
+            statusCode = 400;
+            message = MESSAGE_ERROR.EMPTY_ID
+        }
+    response.status(statusCode);
+    response.json(message);
+
+        
+});
+
+app.get('/vs1/cursos', cors(), async function(request, response) {
+    let statusCode;
+    let message;
+
+    //import do arquivo controllerAluno
+    const controllerCurso = require('./controler/controllerCursos.js');
+    
+    //Retorna todos os alunos existentesno BD
+    const dadosCurso = await controllerCurso.listarCursos();
+
+    //Valida se existe retorne de dados
+    if(dadosCurso){
+        statusCode = 200;
+        message = dadosCurso;
+    } else{
+        statusCode = 404;
+        message = MESSAGE_ERROR.EMPTY_DB;
+    }
+
+    //retorna os dados da API
+    response.status(statusCode);
+    response.json(message);
+});
+
+app.get('/vs1/curso/:id', cors(), jsonParser, async function(request, response){
+    let statusCode;
+    let message;
+    let id = request.params.id
+
+            //Validação do Id
+    if(id != '' && id != undefined && id != false){   
+
+        //import do arquivo controllerCurso
+        const controllerCurso = require('./controler/controllerCursos.js');
+        
+        //Retorna todos os Cursos existentesno BD
+        const dadosCurso = await controllerCurso.mostrarCurso(id);
+
+        //Valida se existe retorne de dados
+        if(dadosCurso){
+            statusCode = 200;
+            message = dadosCurso;
+        } else{
+            statusCode = 404;
+            message = MESSAGE_ERROR.EMPTY_DB;
+        }
+    }else{
+        statusCode = 400;
+        message = MESSAGE_ERROR.EMPTY_ID;
+    }
+
+    //retorna os dados da API
+    response.status(statusCode);
+    response.json(message);
+});
+
+//EndPoint para inserir um novo curso
+app.post('/vs1/curso', cors(), jsonParser, async function(request, response){
+    let statusCode;
+    let message;
+    let headerContentType;
+
+    //Recebe um tipo de content-type que foi enviado no header da requisição
+        //application/json
+    headerContentType = request.headers['content-type'];
+
+    //Validar o content-type
+    if(headerContentType == 'application/json'){
+        //recebe do corpo da mensagem, o conteúdo
+        let dadosBody = request.body;
+
+        //realiza um processo de conversão de dados para conseguir comparar um json vazio
+        if(JSON.stringify(dadosBody) != '{}'){
+            const controllerCurso = require('./controler/controllerCursos.js');
+
+            //Chama a função novoCurso da controller e encminha os dados do dadosBody
+            const novoCurso = await controllerCurso.novoCurso(dadosBody)
+
+            statusCode = novoCurso.status;
+            message = novoCurso.message;
+
+        } else{
+            statusCode = 400;
+            message = MESSAGE_ERROR.EMPTY_BODY;
+        }
+    } else {
+        statusCode = 415;
+        message = MESSAGE_ERROR.CONTENT_TYPE;
+    }
+
+    response.status(statusCode);
+    response.json(message);
+});
+
+//Endpoit para atualizar um curso existente
+app.put('/vs1/curso/:id', cors(), jsonParser, async function(request, response){
+    let statusCode;
+    let message;
+    let headerContentType;
+
+    //Recebe um tipo de content-type que foi enviado no header da requisição
+        //application/json
+    headerContentType = request.headers['content-type'];
+
+    //Validar o content-type
+    if(headerContentType == 'application/json'){
+        //recebe do corpo da mensagem, o conteúdo
+        let dadosBody = request.body;
+
+        //realiza um processo de conversão de dados para conseguir comparar um json vazio
+        if(JSON.stringify(dadosBody) != '{}'){
+
+            //Recebe o id mandado pela requisição
+            let id = request.params.id
+
+            //Validação do Id
+            if(id != '' && id != undefined && id != false){
+                //Adiciona o id no json no corpo da requisição
+                dadosBody.id = id;    
+
+                const controllerCurso = require('./controler/controllerCursos.js');
+
+                //Chama a função atualizarCurso da controller e encminha os dados do dadosBody
+                const atualizarCurso = await controllerCurso.atualizarCurso(dadosBody)
+
+                statusCode = atualizarCurso.status;
+                message = atualizarCurso.message;
+            } else {
+            statusCode = 400;
+            message = MESSAGE_ERROR.REQUIRED_FILDS
+            }
+
+        } else{
+            statusCode = 400;
+            message = MESSAGE_ERROR.EMPTY_BODY;
+        }
+    } else {
+        statusCode = 415;
+        message = MESSAGE_ERROR.CONTENT_TYPE;
+    }
+
+    response.status(statusCode);
+    response.json(message);
+        
+});
+
+app.delete('/vs1/curso/:id', cors(), jsonParser, async function(request, response){
+    let statusCode;
+    let message;
+
+        //Recebe o id mandado pela requisição
+        let id = request.params.id
+
+        //Validação do Id
+        if(id != '' && id != undefined && id != false){
+            const controllerCurso = require('./controler/controllerCursos.js');
+            
+            const delCurso = await controllerCurso.deletarCurso(id)
+
+            statusCode = delCurso.status;
+            message = delCurso.message;
 
         } else {
             statusCode = 400;

@@ -5,7 +5,7 @@
 * Versão: 1.1.0.0
 ********************************************/
 
-const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('../modulos/config.js')
+const { MESSAGE_ERROR, MESSAGE_SUCESS } = require('../modulos/config.js');
 
 //Função para gerar um novo aluno
 const novoAluno = async function(alunoJson) {
