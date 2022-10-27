@@ -2,7 +2,7 @@
 Objetivo: API  responsável pela manipulação de dados do Back-end (GET, POST, PUT, DELETE)
 Autor: Gyovanne Martins
 Data: 10/10
-Versão: 1.1.0.0
+Versão: 1.5.0.0
 npm install express --save
 npm install cors --save
 npm install body-parser --save
