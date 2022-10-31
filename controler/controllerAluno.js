@@ -21,8 +21,18 @@ const novoAluno = async function(alunoJson) {
         //import da model de insertAluno
         const novoAluno = require('../model/DAO/aluno.js');
         //import a funtion para adicionar um aluno
-        const result = await novoAluno.insertAluno(alunoJson);
-        if(result){
+        const resultNovoAluno = await novoAluno.insertAluno(alunoJson);
+
+        //verifica se o novo aluno foi adicionado
+        if(resultNovoAluno){
+            //Chama a função do que verifica qual o id que foi criado para o novo aluno
+            let idNovoAluno = await novoAluno.selectLastId();
+
+            if(idNovoAluno > 0){
+                
+            }
+        }
+        if(idNovoAluno){
             return {message: MESSAGE_SUCESS.SUCESS_CREATED, status: 201};
         } else {
             return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
