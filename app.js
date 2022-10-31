@@ -212,6 +212,12 @@ app.delete('/vs1/aluno/:id', cors(), jsonParser, async function(request, respons
         
 });
 
+//=========================================================================================================================
+/*
+    Objetivo: Crud para cursos
+    Data: 31/10/2022
+*/
+
 app.get('/vs1/cursos', cors(), async function(request, response) {
     let statusCode;
     let message;
