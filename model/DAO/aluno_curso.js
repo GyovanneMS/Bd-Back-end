@@ -16,10 +16,12 @@ const insertAlunoCurso = async function(alunoCurso) {
         //Instância da classe PrismaClient  
         const prisma = new PrismaClient();
 
-        let sql = `insert into tbl_aluno_curso (id_aluno, id_curso)
+        let sql = `insert into tbl_aluno_curso (id_aluno, id_curso, Matricula, status_aluno)
                                     values(
                                     '${ids.id_aluno}',
-                                    '${ids.id_curso}'
+                                    '${ids.id_curso}',
+                                    '${ids.Matricula}',
+                                    '${ids.status_aluno}'
                                     )`;
 
         //Executa o script sql no bd, obs: Esse comando permite encaminhar uma variavel contendo o script
@@ -34,4 +36,8 @@ const insertAlunoCurso = async function(alunoCurso) {
         return false
     }
 
+}
+
+module.exports = {
+    insertAlunoCurso
 }

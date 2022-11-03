@@ -18,10 +18,12 @@ const novoAluno = async function(alunoJson) {
     } else if(!aluno.Email.includes('@')){
         return {message: MESSAGE_ERROR.INVALID_EMAIL, status: 400};
     } else{
-        //import da model de insertAluno
+        //import da model de de aluno e de aluno-curso 
         const novoAluno = require('../model/DAO/aluno.js');
+        const novoAlunoCurso = require('../model/DAO/aluno_curso.js')
         //import a funtion para adicionar um aluno
         const resultNovoAluno = await novoAluno.insertAluno(alunoJson);
+
 
         //verifica se o novo aluno foi adicionado
         if(resultNovoAluno){
@@ -29,11 +31,26 @@ const novoAluno = async function(alunoJson) {
             let idNovoAluno = await novoAluno.selectLastId();
 
             if(idNovoAluno > 0){
-                
+                let alunoCurso = {};
+                //Retorna o ano corrente
+                let anoMatricula = new Date().getFullYear();
+                //Criando a matricula
+                let numero_matricula = `${idNovoAluno}${aluno.curso[0].id_curso}${anoMatricula}`;
+                alunoCurso.id_aluno = idNovoAluno;
+                alunoCurso.id_curso = aluno.curso[0].id_curso;
+                alunoCurso.Matricula = numero_matricula;
+                alunoCurso.status_aluno = 'Cursando';
+
+                //Chama a função para inserir as coisas na tabela intermediária
+                const novoAluno_Curso = await novoAlunoCurso.insertAlunoCurso(alunoCurso);
+
+                if(novoAluno_Curso){
+                    return {message: MESSAGE_SUCESS.SUCESS_CREATED, status: 201}
+                } else {
+                    return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
+                }
+
             }
-        }
-        if(idNovoAluno){
-            return {message: MESSAGE_SUCESS.SUCESS_CREATED, status: 201};
         } else {
             return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
         }
