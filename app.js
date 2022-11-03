@@ -73,9 +73,11 @@ app.get('/vs1/aluno/:id', cors(), jsonParser, async function(request, response){
 
         //import do arquivo controllerAluno
         const controllerAluno = require('./controler/controllerAluno.js');
-        
+        //const controllerAluno = require('./controler/controllerCursos.js');
         //Retorna todos os alunos existentesno BD
-        const dadosAluno = await controllerAluno.mostrarAluno(id);
+        const dadosAluno = {}
+        // dadosAluno.Aluno = await controllerAluno.mostrarAluno(id);
+        // dadosAluno.Curso = await controllerAluno.mostrarAluno(dadosAluno.Aluno.id);
 
         //Valida se existe retorne de dados
         if(dadosAluno){

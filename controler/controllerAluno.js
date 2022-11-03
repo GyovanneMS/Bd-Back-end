@@ -41,7 +41,7 @@ const novoAluno = async function(alunoJson) {
 
                 //Chama a função para inserir as coisas na tabela intermediária
                 const novoAluno_Curso = await novoAlunoCurso.insertAlunoCurso(alunoCurso);
-                console.log(novoAluno_Curso);
+
                 if(novoAluno_Curso){
                     return {message: MESSAGE_SUCESS.SUCESS_CREATED, status: 201}
                 } else {
@@ -145,15 +145,19 @@ const mostrarAluno = async function(idAluno) {
         return {message: MESSAGE_ERROR.EMPTY_ID, status: 400};
     } else{
         const  { selectByIdAluno } = require ('../model/DAO/aluno.js');
+        const { selectAlunoCursoByIdAluno } = require ('../model/DAO/aluno_curso.js');
 
         const dadosAluno = await selectByIdAluno(id);
 
         if(dadosAluno){
-    
+            
+            const dadosAlunoCurso = await selectAlunoCursoByIdAluno(id);
+            if(dadosAlunoCurso){
+                dadosAlunoJson[0].curso = dadosAlunoCurso
+            }   
+        } else {
             dadosAlunoJson.aluno = dadosAluno;
             return dadosAlunoJson;
-        } else {
-            return false
         }
     }
 }
