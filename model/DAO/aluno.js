@@ -186,21 +186,15 @@ const selectLastId = async function(){
     const prisma = new PrismaClient();
 
     //Script para achar o ID gerado no banco de dados
-    let sql = `select cast(id as float) as id
-               from tbl_aluno 
-               order by id desc 
-               limit 1;`
-
+    let sql = `select cast(id as float) as id from tbl_aluno  order by id desc limit 1;`;
 
     try{    
-
-    const id = await prisma.$executeRawUnsafe(sql);
-        
-    if(id.length > 0){
-        return id;
-    } else {
-        return false;
-    }
+        const rsAluno = await prisma.$queryRawUnsafe(sql);
+        if(rsAluno.length > 0){
+            return rsAluno[0].id;
+        } else {
+            return false;
+        }
     } catch{ 
         return false;
     }

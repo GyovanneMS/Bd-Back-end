@@ -23,13 +23,11 @@ const novoAluno = async function(alunoJson) {
         const novoAlunoCurso = require('../model/DAO/aluno_curso.js')
         //import a funtion para adicionar um aluno
         const resultNovoAluno = await novoAluno.insertAluno(alunoJson);
-
-
         //verifica se o novo aluno foi adicionado
         if(resultNovoAluno){
             //Chama a função do que verifica qual o id que foi criado para o novo aluno
             let idNovoAluno = await novoAluno.selectLastId();
-
+            console.log(idNovoAluno);
             if(idNovoAluno > 0){
                 let alunoCurso = {};
                 //Retorna o ano corrente
@@ -39,17 +37,22 @@ const novoAluno = async function(alunoJson) {
                 alunoCurso.id_aluno = idNovoAluno;
                 alunoCurso.id_curso = aluno.curso[0].id_curso;
                 alunoCurso.Matricula = numero_matricula;
-                alunoCurso.status_aluno = 'Cursando';
+                alunoCurso.status_aluno = 'C';
 
                 //Chama a função para inserir as coisas na tabela intermediária
                 const novoAluno_Curso = await novoAlunoCurso.insertAlunoCurso(alunoCurso);
-
+                console.log(novoAluno_Curso);
                 if(novoAluno_Curso){
                     return {message: MESSAGE_SUCESS.SUCESS_CREATED, status: 201}
                 } else {
+                    //Caso aconteça um erro neste processo, obrigatoriamente deverá ser excluido do BD o registro do aluno.
+                    await deletarAluno(idNovoAluno)
                     return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
                 }
-
+            } else {
+                //Caso aconteça um erro neste processo, obrigatoriamente deverá ser excluido do BD o registro do aluno.
+                await deletarAluno(idNovoAluno)
+                return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
             }
         } else {
             return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
@@ -99,13 +102,13 @@ const deletarAluno = async function(idAluno) {
             const delAluno = require('../model/DAO/aluno.js');
             //import a funtion para adicionar um aluno
 
-            const result = await delAluno.deleteAluno(id);
+                const result = await delAluno.deleteAluno(id);
 
             if(result){
                 return {message: MESSAGE_SUCESS.SUCESS_DELETED, status: 200};
             } else {
                 return {message: MESSAGE_ERROR.INTERNAL_ERROR_DB, status: 500};
-            }
+         }
         } else {
             return {message: MESSAGE_ERROR.EMPTY_DB, status: 404}
         }

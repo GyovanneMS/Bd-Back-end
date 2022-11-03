@@ -7,7 +7,7 @@
 
 const insertAlunoCurso = async function(alunoCurso) {
     
-    try{
+
         let ids = alunoCurso;
 
         //Import da classe prismaClient que é responsável pelas alterações com o BD
@@ -18,20 +18,24 @@ const insertAlunoCurso = async function(alunoCurso) {
 
         let sql = `insert into tbl_aluno_curso (id_aluno, id_curso, Matricula, status_aluno)
                                     values(
-                                    '${ids.id_aluno}',
-                                    '${ids.id_curso}',
-                                    '${ids.Matricula}',
+                                    ${ids.id_aluno},
+                                    ${ids.id_curso},
+                                    ${ids.Matricula},
                                     '${ids.status_aluno}'
-                                    )`;
+                                    );`;
+
+                                    console.log(`${ids} <= ids, ${sql} <= sql`);
 
         //Executa o script sql no bd, obs: Esse comando permite encaminhar uma variavel contendo o script
-        const result = await prisma.$executeRawUnsafe(sql);    
+        try{
 
-        if(result){
-            return true;
-        } else {
-            return false;
-        }
+            const result = await prisma.$executeRawUnsafe(sql);    
+                console.log(result);
+            if(result){
+                return true;
+            } else {
+                return false;
+            }
     } catch(error) {
         return false
     }
