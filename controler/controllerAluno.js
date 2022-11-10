@@ -153,7 +153,9 @@ const mostrarAluno = async function(idAluno) {
             
             const dadosAlunoCurso = await selectAlunoCursoByIdAluno(id);
             if(dadosAlunoCurso){
-                dadosAlunoJson[0].curso = dadosAlunoCurso
+                console.log(dadosAluno);
+                dadosAluno[0].curso = dadosAlunoCurso;
+                return dadosAluno;
             }   
         } else {
             dadosAlunoJson.aluno = dadosAluno;

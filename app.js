@@ -76,8 +76,8 @@ app.get('/vs1/aluno/:id', cors(), jsonParser, async function(request, response){
         //const controllerAluno = require('./controler/controllerCursos.js');
         //Retorna todos os alunos existentesno BD
         const dadosAluno = {}
-        // dadosAluno.Aluno = await controllerAluno.mostrarAluno(id);
-        // dadosAluno.Curso = await controllerAluno.mostrarAluno(dadosAluno.Aluno.id);
+        dadosAluno.Aluno = await controllerAluno.mostrarAluno(id);
+        dadosAluno.Curso = await controllerAluno.mostrarAluno(dadosAluno.Aluno.id);
 
         //Valida se existe retorne de dados
         if(dadosAluno){
