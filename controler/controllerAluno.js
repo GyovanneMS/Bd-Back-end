@@ -101,7 +101,7 @@ const deletarAluno = async function(idAluno) {
             const delAluno = require('../model/DAO/aluno.js');
             //import a funtion para adicionar um aluno
 
-                const result = await delAluno.deleteAluno(id);
+            const result = await delAluno.deleteAluno(id);
 
             if(result){
                 return {message: MESSAGE_SUCESS.SUCESS_DELETED, status: 200};

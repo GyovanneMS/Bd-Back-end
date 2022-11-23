@@ -194,7 +194,7 @@ const selectLastId = async function(){
             return rsAluno[0].id;
         } else {
             return false;
-        }
+        } 
     } catch{ 
         return false;
     }
