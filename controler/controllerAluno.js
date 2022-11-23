@@ -27,7 +27,6 @@ const novoAluno = async function(alunoJson) {
         if(resultNovoAluno){
             //Chama a função do que verifica qual o id que foi criado para o novo aluno
             let idNovoAluno = await novoAluno.selectLastId();
-            console.log(idNovoAluno);
             if(idNovoAluno > 0){
                 let alunoCurso = {};
                 //Retorna o ano corrente
@@ -118,18 +117,26 @@ const deletarAluno = async function(idAluno) {
 //Função para retornar todos os registros
 const listarAlunos = async function() {
     let dadosAlunosJson = {};
+    //import da model aluno e alunoCurso
     const  { selectAllAlunos } = require ('../model/DAO/aluno.js');
+    const  { selectAlunoCursoByIdAluno } = require ('../model/DAO/aluno_curso.js');
 
+    //Busca todos os alunos
     const dadosAlunos = await selectAllAlunos();
-
     if(dadosAlunos){
-        {
-        //Converção do tipo de dados BigInt para int(?????????????????????????????????????????????)
-        //dadosAlunos.forEach(element => {
-        //    element.id = Number(element.id)
-        //});
-        }
-        dadosAlunosJson.alunos = dadosAlunos;
+
+        const alunosCursoArray = dadosAlunos.map(async element => {
+
+            const dadosAlunoCurso = await selectAlunoCursoByIdAluno(element.id);
+            element.curso = dadosAlunoCurso
+
+            //Adiciona no array todos os alunos com seu curso
+            //alunosCursoArray.push(element);
+
+            return element
+        });
+        //console.log(await Promise.all(alunosCursoArray));
+        dadosAlunosJson.alunos = await Promise.all(alunosCursoArray);
         return dadosAlunosJson;
     } else {
         return false
@@ -153,7 +160,6 @@ const mostrarAluno = async function(idAluno) {
             
             const dadosAlunoCurso = await selectAlunoCursoByIdAluno(id);
             if(dadosAlunoCurso){
-                console.log(dadosAluno);
                 dadosAluno[0].curso = dadosAlunoCurso;
                 return dadosAluno;
             }   
